@@ -195,56 +195,6 @@ function sed {
     }
 }
 
-function view {
-    <#
-    .SYNOPSIS
-        Views the content of a file, optionally in pages.
-
-    .DESCRIPTION
-        This function reads the content of a file and outputs it.
-        If the -Paging switch is used, the output will be displayed in pages.
-
-    .PARAMETER FilePath
-        Specifies the path to the file to be viewed.
-
-    .PARAMETER Paging
-        Specifies whether to display the output in pages.
-
-    .EXAMPLE
-        View-File -FilePath .\file.txt
-        Displays the content of file.txt in pages.
-
-    .EXAMPLE
-        View-File -FilePath .\file.txt -Paging:$false
-        Displays the content of file.txt without using pages.
-
-    .EXAMPLE
-        Get-ChildItem -Path .\*.* -File | Select-Object -First 1 | View-File
-        Gets the first file in the current directory and displays its content in pages.
-    #>
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateScript({Test-Path -Path $_ -PathType Leaf})]
-        [string]$FilePath,
-
-        [switch]$Paging
-    )
-
-    process {
-        try {
-            $fileContent = Get-Content -Path $FilePath -ErrorAction Stop
-            if ($Paging) {
-                $fileContent | Out-Host -Paging
-            } else {
-                $fileContent | Out-Host
-            }
-        } catch {
-            Write-Host "Failed to view the file: $_"
-        }
-    }
-}
-
 function Chown-Pwsh {
     <#
     .SYNOPSIS
@@ -296,7 +246,6 @@ function Chown-Pwsh {
         }
     }
 }
-
 Set-Alias -Name chown -Value Chown-Pwsh
 
 function wget($url, $outFile) {
@@ -381,13 +330,4 @@ function Get-WhoIs {
         Write-Error "Failed to retrieve whois data"
     }
 }
-
 New-Alias -Name whois -Value Get-WhoIs
-
-# Import the Chocolatey Profile that contains the necessary code to enable tab-completions to function for `choco`.
-# Be aware that if you are missing these lines from your profile, tab completion for `choco` will not function.
-# See https://ch0.co/tab-completion for details.
-$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-if (Test-Path($ChocolateyProfile)) {
-  Import-Module "$ChocolateyProfile"
-}
