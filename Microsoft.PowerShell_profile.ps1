@@ -19,6 +19,12 @@ function e {
     Invoke-Item .
 }
 
+function which ($command)
+{
+  Get-Command -Name $command -ErrorAction SilentlyContinue |
+  Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue
+}
+
 function whichmachine() {
     if ($IsLinux) {
         return "Linux";
